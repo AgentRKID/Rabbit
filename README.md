@@ -14,3 +14,6 @@ mvn package
 
 ### Usage
 If you use this/fork it please all i ask for is credit, if you're using it on your network and having trouble message me on discord @ rkid#0001 
+
+### Requirements
+Redis - (Any version)
