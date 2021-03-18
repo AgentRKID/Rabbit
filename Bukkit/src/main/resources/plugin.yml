@@ -1,0 +1,4 @@
+name: Rabbit-bukkit
+version: ${version}
+author: rkid
+main: io.github.agentrkid.rabbit.bukkit.RabbitBukkit

@@ -1,0 +1,4 @@
+name: Rabbit-bungee
+version: ${version}
+author: rkid
+main: io.github.agentrkid.rabbit.bungee.RabbitBungee

@@ -1,0 +1,71 @@
+package io.github.agentrkid.rabbit.bukkit.command;
+
+import com.jonahseguin.drink.annotation.Command;
+import com.jonahseguin.drink.annotation.Require;
+import com.jonahseguin.drink.annotation.Sender;
+import io.github.agentrkid.rabbit.bukkit.RabbitBukkit;
+import org.apache.commons.lang3.StringUtils;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
+import io.github.agentrkid.rabbit.api.RabbitServer;
+import io.github.agentrkid.rabbit.bukkit.utils.CC;
+import io.github.agentrkid.rabbit.shared.RabbitShared;
+
+public class DrinkRabbitCommands {
+    private static final String LINE = ChatColor.GRAY + ChatColor.STRIKETHROUGH.toString() + StringUtils.repeat('-', 53);
+
+    @Command(name = "", desc = "Rabbit help", usage = "")
+    @Require("rabbit.staff")
+    public void displayHelp(@Sender CommandSender sender) {
+
+    }
+
+    // Requires no permission because, we allow users to see some information.
+    @Command(name = "env", aliases = {"dump"}, desc = "Display the cached dump of the searched server", usage = "<server>")
+    public void displayDump(@Sender CommandSender sender, RabbitServer server) {
+        sender.sendMessage(LINE);
+        sender.sendMessage(CC.translate("&f&l&nRabbit Data Dump"));
+        sender.sendMessage("");
+        sender.sendMessage(CC.translate(" &7* &fName: &7" + server.getId()));
+        sender.sendMessage(CC.translate(" &7* &fGroup: &7" + server.getGroupId()));
+
+        if (sender.hasPermission("rabbit.staff")) {
+            sender.sendMessage(CC.translate(" &7* &fPlayer Count: &7" + server.getPlayerCount()));
+            sender.sendMessage(CC.translate(" &7* &fMax Player Count: &7" + server.getMaxPlayerCount()));
+            if (sender.hasPermission("rabbit.developer")) {
+                sender.sendMessage(CC.translate(" &7* &fMetadata: &7" + server.getMetaData()));
+            }
+        }
+        sender.sendMessage(LINE);
+    }
+
+    @Command(name = "groups", desc = "Displays all cached groups")
+    @Require("rabbit.staff")
+    public void displayGroupList(@Sender CommandSender sender) {
+        sender.sendMessage(CC.translate("&7&oListing groups."));
+        for (String group : RabbitShared.getInstance().getServerManager().getGroups()) {
+            sender.sendMessage(CC.translate("&f" + group + " &7(&7&o" + RabbitShared.getInstance().getServerManager().getServersByGroup(group).size() + "&7)"));
+        }
+    }
+
+    @Command(name = "servers", desc = "Displays all cached servers")
+    @Require("rabbit.staff")
+    public void displayServersList(@Sender CommandSender sender) {
+        sender.sendMessage(CC.translate("&7&oListing servers."));
+        for (RabbitServer server : RabbitShared.getInstance().getServerManager().getServers()) {
+            sender.sendMessage(CC.translate("&f" + server.getId() + " &7(&7&o" + server.getGroupId() + "&7) &f-> " + (server.isOnline() ? "&aOnline" : "&cOffline") + "&7."));
+        }
+    }
+
+    @Command(name = "alerts", desc = "Change your alert status")
+    public void changeAlertsState(@Sender Player sender) {
+        if (sender.hasMetadata("rabbit-alerts")) {
+            sender.removeMetadata("rabbit-alerts", RabbitBukkit.getInstance());
+        } else {
+            sender.setMetadata("rabbit-alerts", new FixedMetadataValue(RabbitBukkit.getInstance(), "102401050250"));
+        }
+        sender.sendMessage(CC.translate("&7You've toggled your server monitor alerts " + (sender.hasMetadata("rabbit-alerts") ? "&aon" : "&coff") + "&7."));
+    }
+}
