@@ -6,6 +6,7 @@ import com.jonahseguin.drink.CommandService;
 import com.jonahseguin.drink.Drink;
 import io.github.agentrkid.rabbit.bukkit.command.DrinkRabbitCommands;
 import io.github.agentrkid.rabbit.bukkit.command.param.RabbitServerProvider;
+import io.github.agentrkid.rabbit.bukkit.jedis.ServerActionSub;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
@@ -57,6 +58,8 @@ public class RabbitBukkit extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerConnectionListener(), this);
 
         RabbitShared.getInstance().getServerManager().addServer(currentServer);
+
+        new ServerActionSub(currentServer.getId());
 
         CommandService drink = Drink.get(this);
 

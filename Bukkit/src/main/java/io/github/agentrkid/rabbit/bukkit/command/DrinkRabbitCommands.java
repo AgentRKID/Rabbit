@@ -4,6 +4,8 @@ import com.jonahseguin.drink.annotation.Command;
 import com.jonahseguin.drink.annotation.Require;
 import com.jonahseguin.drink.annotation.Sender;
 import io.github.agentrkid.rabbit.bukkit.RabbitBukkit;
+import io.github.agentrkid.rabbit.bukkit.jedis.RabbitServerAction;
+import io.github.agentrkid.rabbit.shared.jedis.ChainableMap;
 import io.github.agentrkid.rabbit.shared.jedis.JedisMessageHandler;
 import io.github.agentrkid.rabbit.shared.jedis.JedisMessageUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +19,8 @@ import io.github.agentrkid.rabbit.shared.RabbitShared;
 
 public class DrinkRabbitCommands {
     private static final String LINE = ChatColor.GRAY + ChatColor.STRIKETHROUGH.toString() + StringUtils.repeat('-', 53);
+
+    private static final String SERVER_ACTION_PREFIX = "Rabbit-data-";
 
     @Command(name = "", desc = "Rabbit help", usage = "")
     @Require("rabbit.staff")
@@ -63,6 +67,21 @@ public class DrinkRabbitCommands {
         for (RabbitServer server : RabbitShared.getInstance().getServerManager().getServers()) {
             sender.sendMessage(CC.translate("&f" + server.getId() + " &7(&7&o" + server.getGroupId() + "&7) &f-> " + (server.isOnline() ? "&aOnline" : "&cOffline") + "&7."));
         }
+    }
+
+    @Command(name = "whitelist", desc = "Whitelist a server through redis")
+    @Require("rabbit.whitelist")
+    public void changeWhitelistState(@Sender CommandSender sender, RabbitServer server) {
+        if (!server.isOnline()) {
+            sender.sendMessage(CC.translate("&c" + server.getId() + " is currently offline."));
+            return;
+        }
+
+        // We don't need a callback message from this,
+        // the callback should be the alert (if they have their alerts on)
+        sender.sendMessage(CC.translate("&7&oChanging the whitelist state on " + server.getId()));
+        JedisMessageUtil.sendMessage(RabbitServerAction.WHITELIST, ChainableMap.create().append("state", !server.isWhitelisted()),
+                RabbitShared.getInstance().getJedisMessageHandler(), SERVER_ACTION_PREFIX + server.getId());
     }
 
     @Command(name = "alerts", desc = "Change your alert status")

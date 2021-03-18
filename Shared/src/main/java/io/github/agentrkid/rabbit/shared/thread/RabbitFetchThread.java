@@ -81,7 +81,7 @@ public class RabbitFetchThread extends Thread {
             }
 
             try {
-                Thread.sleep(1250L);
+                Thread.sleep(100L);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

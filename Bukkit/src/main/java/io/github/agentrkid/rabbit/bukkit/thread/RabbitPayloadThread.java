@@ -51,7 +51,7 @@ public class RabbitPayloadThread extends Thread {
             }
 
             try {
-                Thread.sleep(1250L);
+                Thread.sleep(250L);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
