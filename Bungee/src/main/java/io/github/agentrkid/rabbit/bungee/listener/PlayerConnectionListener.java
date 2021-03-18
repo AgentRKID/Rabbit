@@ -26,6 +26,9 @@ public class PlayerConnectionListener implements Listener {
             chain.append("connectType", ServerConnectionType.NETWORK);
             chain.append("to", event.getTarget().getName());
         }
+
+        chain.append("player", player.getUniqueId().toString());
+
         JedisMessageUtil.sendMessage(ConnectionType.JOIN, chain, RabbitShared.getInstance().getJedisMessageHandler(), "rabbit-global");
     }
 
@@ -34,7 +37,8 @@ public class PlayerConnectionListener implements Listener {
         ProxiedPlayer player = event.getPlayer();
         ServerInfo leftFrom = player.getServer().getInfo();
 
-        JedisMessageUtil.sendMessage(ConnectionType.LEAVE, ChainableMap.create().append("from", leftFrom.getName()),
+        JedisMessageUtil.sendMessage(ConnectionType.LEAVE, ChainableMap.create().append("from", leftFrom.getName())
+                        .append("player", player.getUniqueId().toString()),
                 RabbitShared.getInstance().getJedisMessageHandler(),
                 "rabbit-global");
     }
