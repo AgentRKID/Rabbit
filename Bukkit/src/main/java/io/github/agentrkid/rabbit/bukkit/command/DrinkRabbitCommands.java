@@ -4,9 +4,10 @@ import com.jonahseguin.drink.annotation.Command;
 import com.jonahseguin.drink.annotation.Require;
 import com.jonahseguin.drink.annotation.Sender;
 import io.github.agentrkid.rabbit.bukkit.RabbitBukkit;
-import io.github.agentrkid.rabbit.bukkit.jedis.RabbitServerAction;
+import io.github.agentrkid.rabbit.bukkit.jedis.object.RabbitServerAction;
+import io.github.agentrkid.rabbit.bukkit.jedis.ServerActionSub;
+import io.github.agentrkid.rabbit.bukkit.metadata.player.MetadataHandler;
 import io.github.agentrkid.rabbit.shared.jedis.ChainableMap;
-import io.github.agentrkid.rabbit.shared.jedis.JedisMessageHandler;
 import io.github.agentrkid.rabbit.shared.jedis.JedisMessageUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
@@ -18,9 +19,9 @@ import io.github.agentrkid.rabbit.bukkit.utils.CC;
 import io.github.agentrkid.rabbit.shared.RabbitShared;
 
 public class DrinkRabbitCommands {
-    private static final String LINE = ChatColor.GRAY + ChatColor.STRIKETHROUGH.toString() + StringUtils.repeat('-', 53);
+    private static final MetadataHandler metadataHandler = RabbitBukkit.getInstance().getMetadataHandler();
 
-    private static final String SERVER_ACTION_PREFIX = "Rabbit-data-";
+    private static final String LINE = ChatColor.GRAY + ChatColor.STRIKETHROUGH.toString() + StringUtils.repeat('-', 53);
 
     @Command(name = "", desc = "Rabbit help", usage = "")
     @Require("rabbit.staff")
@@ -81,17 +82,18 @@ public class DrinkRabbitCommands {
         // the callback should be the alert (if they have their alerts on)
         sender.sendMessage(CC.translate("&7&oChanging the whitelist state on " + server.getId()));
         JedisMessageUtil.sendMessage(RabbitServerAction.WHITELIST, ChainableMap.create().append("state", !server.isWhitelisted()),
-                RabbitShared.getInstance().getJedisMessageHandler(), SERVER_ACTION_PREFIX + server.getId());
+                RabbitShared.getInstance().getJedisMessageHandler(), ServerActionSub.SERVER_ACTION_PREFIX + server.getId());
     }
 
     @Command(name = "alerts", desc = "Change your alert status")
     @Require("rabbit.staff")
     public void changeAlertsState(@Sender Player sender) {
         if (sender.hasMetadata("rabbit-alerts")) {
-            sender.removeMetadata("rabbit-alerts", RabbitBukkit.getInstance());
+            metadataHandler.removeMetadata(sender.getUniqueId(), "rabbit-alerts");
         } else {
-            sender.setMetadata("rabbit-alerts", new FixedMetadataValue(RabbitBukkit.getInstance(), "102401050250"));
+            metadataHandler.addMetadata(sender.getUniqueId(), "rabbit-alerts", true);
         }
-        sender.sendMessage(CC.translate("&7You've toggled your server monitor alerts " + (sender.hasMetadata("rabbit-alerts") ? "&aon" : "&coff") + "&7."));
+        sender.sendMessage(CC.translate("&7You've toggled your server monitor alerts "
+                + (metadataHandler.hasMetadata(sender.getUniqueId(), "rabbit-alerts") ? "&aon" : "&coff") + "&7."));
     }
 }

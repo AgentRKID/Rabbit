@@ -11,6 +11,9 @@ public class RabbitBungeeAPI implements RabbitAPI {
     public void onNetworkJoin(UUID playerId, RabbitServer to) { }
 
     @Override
+    public void onNetworkLobbyCallbackJoin(UUID playerId, RabbitServer to) { }
+
+    @Override
     public void onNetworkServerSwitch(UUID playerId, RabbitServer to, RabbitServer from) { }
 
     @Override

@@ -1,9 +1,9 @@
-package io.github.agentrkid.rabbit.bukkit.metadata;
+package io.github.agentrkid.rabbit.bukkit.metadata.server;
 
 import com.google.gson.JsonObject;
 
 // We provide a metadata object since there can/will be multiple providers.
-public abstract class RabbitMetadataProvider {
+public abstract class RabbitServerMetadataProvider {
     /**
      * Gets the metadata from the provider and puts it into the object
      *

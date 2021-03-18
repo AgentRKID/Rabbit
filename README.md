@@ -5,6 +5,7 @@ Rabbit is an open source server data manager with the main purpose of allowing d
 * Flexible Manager API
 * Server Metadata system
 * Bukkit network player connection events
+* Session based metadata (Metadata transfers across server)
 
 ### Compiling
 As most people won't have paper downloaded, you must download it or craftbukkit to use it, or even use your own spigot.

@@ -7,14 +7,15 @@ import com.jonahseguin.drink.Drink;
 import io.github.agentrkid.rabbit.bukkit.command.DrinkRabbitCommands;
 import io.github.agentrkid.rabbit.bukkit.command.param.RabbitServerProvider;
 import io.github.agentrkid.rabbit.bukkit.jedis.ServerActionSub;
+import io.github.agentrkid.rabbit.bukkit.listener.RabbitConnectionListener;
+import io.github.agentrkid.rabbit.bukkit.metadata.player.MetadataHandler;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
 import redis.clients.jedis.Jedis;
 import io.github.agentrkid.rabbit.api.RabbitServer;
-import io.github.agentrkid.rabbit.bukkit.listener.PlayerConnectionListener;
-import io.github.agentrkid.rabbit.bukkit.metadata.RabbitMetadataProvider;
+import io.github.agentrkid.rabbit.bukkit.metadata.server.RabbitServerMetadataProvider;
 import io.github.agentrkid.rabbit.bukkit.thread.RabbitPayloadThread;
 import io.github.agentrkid.rabbit.shared.RabbitShared;
 import io.github.agentrkid.rabbit.shared.jedis.JedisMessageHandler;
@@ -31,7 +32,9 @@ public class RabbitBukkit extends JavaPlugin {
 
     @Getter private static RabbitBukkit instance;
 
-    private final List<RabbitMetadataProvider> providers = new ArrayList<>();
+    private final List<RabbitServerMetadataProvider> providers = new ArrayList<>();
+
+    private MetadataHandler metadataHandler;
 
     private RabbitServer currentServer;
 
@@ -44,6 +47,8 @@ public class RabbitBukkit extends JavaPlugin {
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
+        metadataHandler = new MetadataHandler();
+
         Configuration config = getConfig();
 
         new RabbitShared(new RabbitBukkitAPI(), config.getString("server.id"), true);
@@ -55,7 +60,7 @@ public class RabbitBukkit extends JavaPlugin {
         (payloadThread = new RabbitPayloadThread(currentServer)).start();
         (new RabbitFetchThread()).start();
 
-        getServer().getPluginManager().registerEvents(new PlayerConnectionListener(), this);
+        getServer().getPluginManager().registerEvents(new RabbitConnectionListener(), this);
 
         RabbitShared.getInstance().getServerManager().addServer(currentServer);
 
@@ -93,7 +98,7 @@ public class RabbitBukkit extends JavaPlugin {
         }
     }
 
-    public void addProvider(RabbitMetadataProvider provider) {
+    public void addProvider(RabbitServerMetadataProvider provider) {
         this.providers.add(provider);
     }
 }

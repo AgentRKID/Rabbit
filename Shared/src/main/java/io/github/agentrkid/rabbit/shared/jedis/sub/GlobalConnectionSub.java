@@ -34,6 +34,8 @@ public class GlobalConnectionSub extends JedisSub {
 
             if (type == ServerConnectionType.NETWORK) {
                 shared.getApi().onNetworkJoin(playerId, shared.getServerManager().getServerById(data.get("to").getAsString()));
+            } else if (type == ServerConnectionType.FALLBACK) {
+                shared.getApi().onNetworkLobbyCallbackJoin(playerId, shared.getServerManager().getServerById(data.get("to").getAsString()));
             } else {
                 shared.getApi().onNetworkServerSwitch(playerId, shared.getServerManager().getServerById(data.get("to").getAsString()),
                         shared.getServerManager().getServerById(data.get("from").getAsString()));

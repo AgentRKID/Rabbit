@@ -16,6 +16,15 @@ public interface RabbitAPI {
 
     /**
      * Notifies all online servers that a player
+     * joined using the callback result.
+     *
+     * @param playerId the player which joined
+     * @param to the server which the callback was set to
+     */
+    void onNetworkLobbyCallbackJoin(UUID playerId, RabbitServer to);
+
+    /**
+     * Notifies all online servers that a player
      * has switched servers on the network
      *
      * @param playerId the player which joined

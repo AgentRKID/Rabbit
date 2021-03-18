@@ -7,7 +7,7 @@ import lombok.Setter;
 import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
 import io.github.agentrkid.rabbit.api.RabbitServer;
-import io.github.agentrkid.rabbit.bukkit.metadata.RabbitMetadataProvider;
+import io.github.agentrkid.rabbit.bukkit.metadata.server.RabbitServerMetadataProvider;
 import io.github.agentrkid.rabbit.shared.RabbitShared;
 import io.github.agentrkid.rabbit.shared.jedis.JedisMessageHandler;
 
@@ -66,7 +66,7 @@ public class RabbitPayloadThread extends Thread {
      */
     private JsonObject loadMetadata() {
         JsonObject object = new JsonObject();
-        for (RabbitMetadataProvider provider : RabbitBukkit.getInstance().getProviders()) {
+        for (RabbitServerMetadataProvider provider : RabbitBukkit.getInstance().getProviders()) {
             object = provider.getMetadata(object);
         }
         return object;

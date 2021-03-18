@@ -16,6 +16,13 @@ public class RabbitBukkitAPI implements RabbitAPI {
     }
 
     @Override
+    public void onNetworkLobbyCallbackJoin(UUID playerId, RabbitServer to) {
+        // Recall this since we couldn't keep their data
+        Bukkit.getPluginManager().callEvent(new NetworkLeaveEvent(playerId, null));
+        Bukkit.getPluginManager().callEvent(new NetworkJoinEvent(playerId, to));
+    }
+
+    @Override
     public void onNetworkServerSwitch(UUID playerId, RabbitServer to, RabbitServer from) {
         Bukkit.getPluginManager().callEvent(new NetworkSwitchServerEvent(playerId, to, from));
     }

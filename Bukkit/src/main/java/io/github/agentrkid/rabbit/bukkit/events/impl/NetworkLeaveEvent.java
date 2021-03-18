@@ -1,5 +1,6 @@
 package io.github.agentrkid.rabbit.bukkit.events.impl;
 
+import io.github.agentrkid.rabbit.bukkit.RabbitBukkit;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import io.github.agentrkid.rabbit.api.RabbitServer;
@@ -12,4 +13,8 @@ import java.util.UUID;
 public class NetworkLeaveEvent extends RabbitBaseEvent {
     private final UUID playerId;
     private final RabbitServer from;
+
+    public boolean isFromCurrent() {
+        return from == RabbitBukkit.getInstance().getCurrentServer();
+    }
 }
