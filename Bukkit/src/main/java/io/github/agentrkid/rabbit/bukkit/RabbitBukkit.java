@@ -7,6 +7,7 @@ import com.jonahseguin.drink.Drink;
 import io.github.agentrkid.rabbit.bukkit.command.DrinkRabbitCommands;
 import io.github.agentrkid.rabbit.bukkit.command.param.RabbitServerProvider;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
 import redis.clients.jedis.Jedis;
@@ -48,6 +49,7 @@ public class RabbitBukkit extends JavaPlugin {
 
         currentServer = new RabbitServer(config.getString("server.id"));
         currentServer.setGroupId(config.getString("server.group-id"));
+        currentServer.setWhitelisted(Bukkit.hasWhitelist());
 
         (payloadThread = new RabbitPayloadThread(currentServer)).start();
         (new RabbitFetchThread()).start();
@@ -77,6 +79,8 @@ public class RabbitBukkit extends JavaPlugin {
             data.put("groupId", currentServer.getGroupId());
             data.put("maxPlayerCount", String.valueOf(0));
             data.put("online", String.valueOf(false));
+            data.put("whitelisted", String.valueOf(Bukkit.hasWhitelist()));
+
 
             redis.hmset("rabbit:" + this.currentServer.getId(), data);
 

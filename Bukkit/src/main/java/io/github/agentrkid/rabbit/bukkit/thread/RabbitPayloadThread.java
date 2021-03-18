@@ -36,11 +36,12 @@ public class RabbitPayloadThread extends Thread {
                 Jedis redis = handler.getPool().getResource();
 
                 final Map<String, String> data = new HashMap<>();
-                data.put("playerCount", Bukkit.getOnlinePlayers().size() + "");
+                data.put("playerCount", String.valueOf(Bukkit.getOnlinePlayers().size()));
                 data.put("groupId", currentServer.getGroupId());
-                data.put("maxPlayerCount", Bukkit.getMaxPlayers() + "");
+                data.put("maxPlayerCount", String.valueOf(Bukkit.getMaxPlayers()));
                 data.put("metaData", RabbitBukkit.GSON.toJson(loadMetadata()));
-                data.put("online", true + "");
+                data.put("whitelisted", String.valueOf(Bukkit.hasWhitelist()));
+                data.put("online", String.valueOf(true));
 
                 redis.hmset("rabbit:" + this.currentServer.getId(), data);
 

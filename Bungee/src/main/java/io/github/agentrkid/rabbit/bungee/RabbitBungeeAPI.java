@@ -18,4 +18,7 @@ public class RabbitBungeeAPI implements RabbitAPI {
 
     @Override
     public void onServerStateChange(RabbitServer server, boolean newState, boolean oldState) { }
+
+    @Override
+    public void onServerWhitelistedState(RabbitServer server, boolean newState, boolean oldState) { }
 }

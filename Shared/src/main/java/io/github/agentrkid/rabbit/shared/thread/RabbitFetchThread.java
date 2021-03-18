@@ -1,7 +1,11 @@
 package io.github.agentrkid.rabbit.shared.thread;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.agentrkid.rabbit.shared.jedis.JedisMessageHandler;
+import io.github.agentrkid.rabbit.shared.util.ParseUtil;
 import redis.clients.jedis.Jedis;
 import io.github.agentrkid.rabbit.api.RabbitServer;
 import io.github.agentrkid.rabbit.shared.RabbitShared;
@@ -32,15 +36,41 @@ public class RabbitFetchThread extends Thread {
                         continue;
                     }
 
+                    int playerCount = ParseUtil.parseInteger(redis.hget(serverKey, "playerCount"));
+                    if (playerCount != -1) {
+                        server.setPlayerCount(playerCount);
+                    }
+
+                    int maxPlayerCount = ParseUtil.parseInteger(redis.hget(serverKey, "maxPlayerCount"));
+                    if (maxPlayerCount != -1) {
+                        server.setMaxPlayerCount(maxPlayerCount);
+                    }
+
+                    JsonElement element = new JsonParser().parse(redis.hget(serverKey, "metaData"));
+                    if (!(element instanceof JsonNull) && element instanceof JsonObject) {
+                        server.setMetaData(element.getAsJsonObject());
+                    }
+
+                    String groupId = redis.hget(serverKey, "groupId");
+
+                    if (groupId != null) {
+                        server.setGroupId(groupId);
+                    }
+
+                    boolean whitelistedBefore = server.isWhitelisted();
+                    boolean whitelistedNow = ParseUtil.parseBoolean(redis.hget(serverKey, "whitelisted"));
+
+                    server.setWhitelisted(whitelistedNow);
+
+                    if (whitelistedNow != whitelistedBefore) {
+                        shared.getApi().onServerWhitelistedState(server, whitelistedNow, whitelistedBefore);
+                    }
+
+
                     boolean oldState = server.isOnline();
-                    boolean newState = Boolean.parseBoolean(redis.hget(serverKey, "online"));
+                    boolean newState = ParseUtil.parseBoolean(redis.hget(serverKey, "online"));
 
-                    server.setPlayerCount(Integer.parseInt(redis.hget(serverKey, "playerCount")));
-                    server.setMaxPlayerCount(Integer.parseInt(redis.hget(serverKey, "maxPlayerCount")));
-                    server.setMetaData(new JsonParser().parse(redis.hget(serverKey, "metaData")).getAsJsonObject());
-                    server.setGroupId(redis.hget(serverKey, "groupId"));
                     server.setOnline(newState);
-
                     if (newState != oldState) {
                         shared.getApi().onServerStateChange(server, newState, oldState);
                     }

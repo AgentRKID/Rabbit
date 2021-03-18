@@ -4,6 +4,8 @@ import com.jonahseguin.drink.annotation.Command;
 import com.jonahseguin.drink.annotation.Require;
 import com.jonahseguin.drink.annotation.Sender;
 import io.github.agentrkid.rabbit.bukkit.RabbitBukkit;
+import io.github.agentrkid.rabbit.shared.jedis.JedisMessageHandler;
+import io.github.agentrkid.rabbit.shared.jedis.JedisMessageUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -32,10 +34,14 @@ public class DrinkRabbitCommands {
         sender.sendMessage(CC.translate(" &7* &fGroup: &7" + server.getGroupId()));
 
         if (sender.hasPermission("rabbit.staff")) {
-            sender.sendMessage(CC.translate(" &7* &fPlayer Count: &7" + server.getPlayerCount()));
-            sender.sendMessage(CC.translate(" &7* &fMax Player Count: &7" + server.getMaxPlayerCount()));
-            if (sender.hasPermission("rabbit.developer")) {
-                sender.sendMessage(CC.translate(" &7* &fMetadata: &7" + server.getMetaData()));
+            sender.sendMessage(CC.translate(" &7* &fOnline: " + (server.isOnline() ? "&aOnline" : "&cOffline") + "&7."));
+            if (server.isOnline()) {
+                sender.sendMessage(CC.translate(" &7* &fWhitelisted: " + (server.isWhitelisted() ? "&aOn" : "&cOff") + "&7."));
+                sender.sendMessage(CC.translate(" &7* &fPlayer Count: &7" + server.getPlayerCount()));
+                sender.sendMessage(CC.translate(" &7* &fMax Player Count: &7" + server.getMaxPlayerCount()));
+                if (sender.hasPermission("rabbit.developer")) {
+                    sender.sendMessage(CC.translate(" &7* &fMetadata: &7" + server.getMetaData()));
+                }
             }
         }
         sender.sendMessage(LINE);
@@ -60,6 +66,7 @@ public class DrinkRabbitCommands {
     }
 
     @Command(name = "alerts", desc = "Change your alert status")
+    @Require("rabbit.staff")
     public void changeAlertsState(@Sender Player sender) {
         if (sender.hasMetadata("rabbit-alerts")) {
             sender.removeMetadata("rabbit-alerts", RabbitBukkit.getInstance());

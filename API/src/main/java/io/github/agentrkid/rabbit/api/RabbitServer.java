@@ -16,6 +16,8 @@ public class RabbitServer {
 
     private boolean online;
 
+    private boolean whitelisted;
+
     private JsonObject metaData;
 
     public RabbitServer(String id) {

@@ -42,4 +42,14 @@ public interface RabbitAPI {
      * @param oldState the old state
      */
     void onServerStateChange(RabbitServer server, boolean newState, boolean oldState);
+
+    /**
+     * Notifies all online servers that a server
+     * whitelist state has changed from true to false or false to true.
+     *
+     * @param server the server which the whitelist state changed
+     * @param newState the new state
+     * @param oldState
+     */
+    void onServerWhitelistedState(RabbitServer server, boolean newState, boolean oldState);
 }
