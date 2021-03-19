@@ -22,13 +22,25 @@ public class ServerActionSub extends JedisSub {
     public void onMessage(String payload, JsonObject data) {
         RabbitServerAction serverAction = RabbitServerAction.valueOf(payload);
 
-        // TODO Add more actions maybe?
-        if (serverAction == RabbitServerAction.WHITELIST) {
-            Bukkit.setWhitelist(data.get("state").getAsBoolean());
-        } else {
-            System.out.println(data.get("map"));
-            for (Map.Entry<String, JsonElement> entry : data.get("map").getAsJsonObject().entrySet()) {
-                RabbitBukkit.getInstance().getMetadataHandler().addMetadata(UUID.fromString(data.get("player").getAsString()), entry.getKey(), entry.getValue());
+        switch(serverAction) {
+            case WHITELIST: {
+                Bukkit.setWhitelist(data.get("state").getAsBoolean());
+                break;
+            }
+            case METADATA_TRANSFER: {
+                for (Map.Entry<String, JsonElement> entry : data.get("map").getAsJsonObject().entrySet()) {
+                    RabbitBukkit.getInstance().getMetadataHandler().addMetadata(UUID.fromString(data.get("player").getAsString()),
+                            entry.getKey(), entry.getValue());
+                }
+                break;
+            }
+            case METADATA_SEND: {
+                RabbitBukkit.getInstance().getMetadataHandler().addMetadata(UUID.fromString(data.get("player").getAsString()),
+                        data.get("key").getAsString(), data.get("value"));
+                break;
+            }
+            case METADATA_REMOVE: {
+                RabbitBukkit.getInstance().getMetadataHandler().removeMetadata(UUID.fromString(data.get("player").getAsString()), data.get("key").getAsString());
             }
         }
     }

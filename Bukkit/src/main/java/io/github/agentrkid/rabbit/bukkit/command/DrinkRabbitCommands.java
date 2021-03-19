@@ -7,13 +7,13 @@ import io.github.agentrkid.rabbit.bukkit.RabbitBukkit;
 import io.github.agentrkid.rabbit.bukkit.jedis.object.RabbitServerAction;
 import io.github.agentrkid.rabbit.bukkit.jedis.ServerActionSub;
 import io.github.agentrkid.rabbit.bukkit.metadata.player.MetadataHandler;
+import io.github.agentrkid.rabbit.bukkit.utils.MetadataUtil;
 import io.github.agentrkid.rabbit.shared.jedis.ChainableMap;
 import io.github.agentrkid.rabbit.shared.jedis.JedisMessageUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
 import io.github.agentrkid.rabbit.api.RabbitServer;
 import io.github.agentrkid.rabbit.bukkit.utils.CC;
 import io.github.agentrkid.rabbit.shared.RabbitShared;
@@ -89,9 +89,9 @@ public class DrinkRabbitCommands {
     @Require("rabbit.staff")
     public void changeAlertsState(@Sender Player sender) {
         if (sender.hasMetadata("rabbit-alerts")) {
-            metadataHandler.removeMetadata(sender.getUniqueId(), "rabbit-alerts");
+            MetadataUtil.removeMetadata(sender.getUniqueId(), "rabbit-alerts", false, null);
         } else {
-            metadataHandler.addMetadata(sender.getUniqueId(), "rabbit-alerts", true);
+            MetadataUtil.addMetadata(sender.getUniqueId(), "rabbit-alerts", true, false, null);
         }
         sender.sendMessage(CC.translate("&7You've toggled your server monitor alerts "
                 + (metadataHandler.hasMetadata(sender.getUniqueId(), "rabbit-alerts") ? "&aon" : "&coff") + "&7."));
