@@ -13,7 +13,7 @@ public class RabbitShared {
 
     @Getter private static RabbitShared instance;
 
-    private final RabbitAPI api;
+    private final RabbitEventListener eventListener;
 
     private final String connectionName;
 
@@ -21,10 +21,10 @@ public class RabbitShared {
 
     private final RabbitServerManager serverManager;
 
-    public RabbitShared(RabbitAPI api, String connectionName, boolean receiveConnections) {
+    public RabbitShared(RabbitEventListener api, String connectionName, boolean receiveConnections) {
         instance = this;
 
-        this.api = api;
+        this.eventListener = api;
         this.connectionName = connectionName;
 
         jedisMessageHandler = new JedisMessageHandler();

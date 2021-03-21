@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jonahseguin.drink.CommandService;
 import com.jonahseguin.drink.Drink;
-import io.github.agentrkid.rabbit.bukkit.command.DrinkRabbitCommands;
+import io.github.agentrkid.rabbit.bukkit.command.RabbitCommands;
 import io.github.agentrkid.rabbit.bukkit.command.param.RabbitServerProvider;
 import io.github.agentrkid.rabbit.bukkit.jedis.ServerActionSub;
 import io.github.agentrkid.rabbit.bukkit.listener.RabbitConnectionListener;
@@ -51,7 +51,7 @@ public class RabbitBukkit extends JavaPlugin {
 
         Configuration config = getConfig();
 
-        new RabbitShared(new RabbitBukkitAPI(), config.getString("server.id"), true);
+        new RabbitShared(new RabbitServerListener(), config.getString("server.id"), true);
 
         currentServer = new RabbitServer(config.getString("server.id"));
         currentServer.setGroupId(config.getString("server.group-id"));
@@ -69,7 +69,7 @@ public class RabbitBukkit extends JavaPlugin {
         CommandService drink = Drink.get(this);
 
         drink.bind(RabbitServer.class).toProvider(new RabbitServerProvider());
-        drink.register(new DrinkRabbitCommands(), "rabbit", "rab");
+        drink.register(new RabbitCommands(), "rabbit", "rab");
         drink.registerCommands();
     }
 

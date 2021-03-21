@@ -4,7 +4,7 @@ import io.github.agentrkid.rabbit.api.RabbitServer;
 
 import java.util.UUID;
 
-public interface RabbitAPI {
+public interface RabbitEventListener {
     /**
      * Notifies all online servers that a player
      * joined the network

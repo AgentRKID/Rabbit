@@ -3,11 +3,12 @@ package io.github.agentrkid.rabbit.bukkit.command;
 import com.jonahseguin.drink.annotation.Command;
 import com.jonahseguin.drink.annotation.Require;
 import com.jonahseguin.drink.annotation.Sender;
+import io.github.agentrkid.rabbit.bukkit.utils.RabbitAPI;
 import io.github.agentrkid.rabbit.bukkit.RabbitBukkit;
 import io.github.agentrkid.rabbit.bukkit.jedis.object.RabbitServerAction;
 import io.github.agentrkid.rabbit.bukkit.jedis.ServerActionSub;
 import io.github.agentrkid.rabbit.bukkit.metadata.player.MetadataHandler;
-import io.github.agentrkid.rabbit.bukkit.utils.MetadataUtil;
+import io.github.agentrkid.rabbit.bukkit.utils.MetadataAPI;
 import io.github.agentrkid.rabbit.shared.jedis.ChainableMap;
 import io.github.agentrkid.rabbit.shared.jedis.JedisMessageUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +19,7 @@ import io.github.agentrkid.rabbit.api.RabbitServer;
 import io.github.agentrkid.rabbit.bukkit.utils.CC;
 import io.github.agentrkid.rabbit.shared.RabbitShared;
 
-public class DrinkRabbitCommands {
+public class RabbitCommands {
     private static final MetadataHandler metadataHandler = RabbitBukkit.getInstance().getMetadataHandler();
 
     private static final String LINE = ChatColor.GRAY + ChatColor.STRIKETHROUGH.toString() + StringUtils.repeat('-', 53);
@@ -56,7 +57,7 @@ public class DrinkRabbitCommands {
     @Require("rabbit.staff")
     public void displayGroupList(@Sender CommandSender sender) {
         sender.sendMessage(CC.translate("&7&oListing groups."));
-        for (String group : RabbitShared.getInstance().getServerManager().getGroups()) {
+        for (String group : RabbitAPI.getGroups()) {
             sender.sendMessage(CC.translate("&f" + group + " &7(&7&o" + RabbitShared.getInstance().getServerManager().getServersByGroup(group).size() + "&7)"));
         }
     }
@@ -65,7 +66,7 @@ public class DrinkRabbitCommands {
     @Require("rabbit.staff")
     public void displayServersList(@Sender CommandSender sender) {
         sender.sendMessage(CC.translate("&7&oListing servers."));
-        for (RabbitServer server : RabbitShared.getInstance().getServerManager().getServers()) {
+        for (RabbitServer server : RabbitAPI.getServers()) {
             sender.sendMessage(CC.translate("&f" + server.getId() + " &7(&7&o" + server.getGroupId() + "&7) &f-> " + (server.isOnline() ? "&aOnline" : "&cOffline") + "&7."));
         }
     }
@@ -88,10 +89,10 @@ public class DrinkRabbitCommands {
     @Command(name = "alerts", desc = "Change your alert status")
     @Require("rabbit.staff")
     public void changeAlertsState(@Sender Player sender) {
-        if (sender.hasMetadata("rabbit-alerts")) {
-            MetadataUtil.removeMetadata(sender.getUniqueId(), "rabbit-alerts", false, null);
+        if (metadataHandler.hasMetadata(sender.getUniqueId(), "rabbit-alerts")) {
+            MetadataAPI.removeMetadata(sender.getUniqueId(), "rabbit-alerts", false, null);
         } else {
-            MetadataUtil.addMetadata(sender.getUniqueId(), "rabbit-alerts", true, false, null);
+            MetadataAPI.addMetadata(sender.getUniqueId(), "rabbit-alerts", true, false, null);
         }
         sender.sendMessage(CC.translate("&7You've toggled your server monitor alerts "
                 + (metadataHandler.hasMetadata(sender.getUniqueId(), "rabbit-alerts") ? "&aon" : "&coff") + "&7."));

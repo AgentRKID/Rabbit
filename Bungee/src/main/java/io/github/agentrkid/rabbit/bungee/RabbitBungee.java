@@ -15,7 +15,7 @@ public class RabbitBungee extends Plugin {
     public void onEnable() {
         instance = this;
 
-        new RabbitShared(new RabbitBungeeAPI(), "Bungee", false);
+        new RabbitShared(new RabbitServerListener(), "Bungee", false);
 
         (new RabbitFetchThread()).start();
 

@@ -5,11 +5,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import io.github.agentrkid.rabbit.bukkit.utils.CC;
 import io.github.agentrkid.rabbit.api.RabbitServer;
-import io.github.agentrkid.rabbit.shared.RabbitAPI;
+import io.github.agentrkid.rabbit.shared.RabbitEventListener;
 
 import java.util.UUID;
 
-public class RabbitBukkitAPI implements RabbitAPI {
+public class RabbitServerListener implements RabbitEventListener {
     @Override
     public void onNetworkJoin(UUID playerId, RabbitServer to) {
         Bukkit.getPluginManager().callEvent(new NetworkJoinEvent(playerId, to));

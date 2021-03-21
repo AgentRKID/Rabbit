@@ -63,7 +63,7 @@ public class RabbitFetchThread extends Thread {
                     server.setWhitelisted(whitelistedNow);
 
                     if (whitelistedNow != whitelistedBefore) {
-                        shared.getApi().onServerWhitelistedState(server, whitelistedNow, whitelistedBefore);
+                        shared.getEventListener().onServerWhitelistedState(server, whitelistedNow, whitelistedBefore);
                     }
 
 
@@ -72,7 +72,7 @@ public class RabbitFetchThread extends Thread {
 
                     server.setOnline(newState);
                     if (newState != oldState) {
-                        shared.getApi().onServerStateChange(server, newState, oldState);
+                        shared.getEventListener().onServerStateChange(server, newState, oldState);
                     }
                 }
                 handler.getPool().returnResource(redis);

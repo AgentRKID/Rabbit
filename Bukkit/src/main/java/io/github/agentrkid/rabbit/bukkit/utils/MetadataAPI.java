@@ -7,11 +7,13 @@ import io.github.agentrkid.rabbit.shared.RabbitShared;
 import io.github.agentrkid.rabbit.shared.jedis.ChainableMap;
 import io.github.agentrkid.rabbit.shared.jedis.JedisMessageUtil;
 import lombok.experimental.UtilityClass;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
 @UtilityClass
-public class MetadataUtil {
+public class MetadataAPI {
     /**
      * Adds metadata to a players session
      *
@@ -46,5 +48,20 @@ public class MetadataUtil {
         } else {
             RabbitBukkit.getInstance().getMetadataHandler().removeMetadata(playerId, key);
         }
+    }
+
+    /**
+     * Checks if the player has the metadata
+     *
+     * @param playerId the player session
+     * @param key the key/metadata to check for
+     * @return if they have the metadata
+     */
+    public boolean hasMetadata(UUID playerId, String key) {
+        Player player = Bukkit.getPlayer(playerId);
+        if (player == null || !player.isOnline()) {
+            return false;
+        }
+        return RabbitBukkit.getInstance().getMetadataHandler().hasMetadata(playerId, key);
     }
 }

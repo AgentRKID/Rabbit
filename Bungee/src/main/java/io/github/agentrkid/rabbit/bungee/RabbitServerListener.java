@@ -1,12 +1,12 @@
 package io.github.agentrkid.rabbit.bungee;
 
 import io.github.agentrkid.rabbit.api.RabbitServer;
-import io.github.agentrkid.rabbit.shared.RabbitAPI;
+import io.github.agentrkid.rabbit.shared.RabbitEventListener;
 
 import java.util.UUID;
 
 
-public class RabbitBungeeAPI implements RabbitAPI {
+public class RabbitServerListener implements RabbitEventListener {
     @Override
     public void onNetworkJoin(UUID playerId, RabbitServer to) { }
 

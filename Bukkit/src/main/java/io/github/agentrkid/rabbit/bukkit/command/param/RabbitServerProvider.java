@@ -4,6 +4,7 @@ import com.jonahseguin.drink.argument.CommandArg;
 import com.jonahseguin.drink.exception.CommandExitMessage;
 import com.jonahseguin.drink.parametric.DrinkProvider;
 import io.github.agentrkid.rabbit.api.RabbitServer;
+import io.github.agentrkid.rabbit.bukkit.utils.RabbitAPI;
 import io.github.agentrkid.rabbit.shared.RabbitShared;
 
 import javax.annotation.Nonnull;
@@ -28,7 +29,7 @@ public class RabbitServerProvider extends DrinkProvider<RabbitServer> {
     @Override
     public RabbitServer provide(@Nonnull CommandArg arg, @Nonnull List<? extends Annotation> annotations) throws CommandExitMessage {
         String rabbitServerName = arg.get();
-        RabbitServer server = RabbitShared.getInstance().getServerManager().getServerById(rabbitServerName);
+        RabbitServer server = RabbitAPI.getServer(rabbitServerName);
 
         if (server != null) {
             return server;
